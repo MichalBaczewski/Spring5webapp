@@ -2,8 +2,10 @@ package com.baczewski.springframework.spring5webapp.bootstrap;
 
 import com.baczewski.springframework.spring5webapp.model.Author;
 import com.baczewski.springframework.spring5webapp.model.Book;
+import com.baczewski.springframework.spring5webapp.model.Publisher;
 import com.baczewski.springframework.spring5webapp.repositories.AuthorRepository;
 import com.baczewski.springframework.spring5webapp.repositories.BookRepository;
+import com.baczewski.springframework.spring5webapp.repositories.PublisherRepository;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
@@ -13,10 +15,12 @@ public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent> 
 
     private AuthorRepository authorRepository;
     private BookRepository bookRepository;
+    private PublisherRepository publisherRepository;
 
-    public DevBootstrap(AuthorRepository authorRepository, BookRepository bookRepository) {
+    public DevBootstrap(AuthorRepository authorRepository, BookRepository bookRepository, PublisherRepository publisherRepository) {
         this.authorRepository = authorRepository;
         this.bookRepository = bookRepository;
+        this.publisherRepository = publisherRepository;
     }
 
     @Override
@@ -26,9 +30,14 @@ public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent> 
 
     private void initData(){
 
+        Publisher publisher = new Publisher();
+        publisher.setName("foo");
+
+        publisherRepository.save(publisher);
+
         //Eric
         Author eric = new Author("Eric", "Evans");
-        Book ddd = new Book("Domain Drien Design", "1234", "Harper Colins");
+        Book ddd = new Book("Domain Drien Design", "1234", publisher);
         eric.getBooks().add(ddd);
         ddd.getAuthors().add(eric);
         authorRepository.save(eric);
@@ -36,7 +45,7 @@ public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent> 
 
         //Rod
         Author rod = new Author("Rod", "Johnson");
-        Book noEJB = new Book("J2EE Development without EJB", "2244", "Wrox");
+        Book noEJB = new Book("J2EE Development without EJB", "2244", publisher);
         rod.getBooks().add(noEJB);
         noEJB.getAuthors().add(rod);
         authorRepository.save(rod);
